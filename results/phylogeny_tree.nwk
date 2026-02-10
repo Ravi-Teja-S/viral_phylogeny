@@ -1,1 +1,1 @@
-(Bat_outgroup:0.00000,(Omicron:0.00572,(Wuhan:0.00065,Delta:0.00145)Inner1:0.00062)Inner2:0.07153):0.00000;
+(Bat_outgroup:0.00000,((Gamma_P1:0.00000,Wuhan:0.00000)Inner5:0.00155,(Delta_B16172:0.00584,((Mu_B1621:0.00029,Alpha_B117:0.00030)Inner4:0.00485,(Beta_B1351:0.00390,((Lambda_C37:0.03297,Omicron_BA2:0.05920)Inner1:0.02710,(Omicron_BA5:0.00283,Omicron_BA1:0.00060)Inner2:0.01072)Inner3:0.00708)Inner6:0.00083)Inner7:0.00077)Inner8:0.00052)Inner9:0.02068):0.00000;
