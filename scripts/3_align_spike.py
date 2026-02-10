@@ -1,5 +1,5 @@
 from pathlib import Path
-import subprocess, shutil
+import subprocess
 
 BASE = Path(__file__).resolve().parent.parent
 outdir = BASE / "data/aligned"
@@ -12,14 +12,13 @@ files = {
 
 for inp, aln_name in files.items():
     aln = outdir / aln_name
-    dnd_raw = inp.with_suffix(".dnd")
+
+    print("Aligning:", inp.name)
 
     subprocess.run(
-        ["clustalw", f"-INFILE={inp}", f"-OUTFILE={aln}", "-OUTPUT=CLUSTAL"],
+        ["mafft", "--auto", str(inp)],
+        stdout=open(aln, "w"),
         check=True
     )
 
-    if dnd_raw.exists():
-        shutil.move(dnd_raw, outdir / dnd_raw.name)
-
-print("All alignments saved in:", outdir)
+print("\nAll MAFFT alignments saved in:", outdir)

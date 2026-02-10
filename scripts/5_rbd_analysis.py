@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from Bio import AlignIO
 
-alignment = AlignIO.read("../data/aligned/spike_sequences.aln", "clustal")
+alignment = AlignIO.read("../data/aligned/spike_sequences.aln", "fasta")
 
 RBD_START = 957
 RBD_END = 1623

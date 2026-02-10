@@ -1,32 +1,57 @@
 from Bio import AlignIO
 
-alignment = AlignIO.read("../data/aligned/spike_proteins.aln", "clustal")
+alignment = AlignIO.read(
+    "../data/aligned/spike_proteins.aln",
+    "fasta"
+)
 
-# identify sequences
-wuhan = None
-omicron = None
+# ---- Load all sequences into dict ----
+seqs = {rec.id: rec.seq for rec in alignment}
 
-for record in alignment:
-    if "NC_045512" in record.id or "Wuhan" in record.id:
-        wuhan = record.seq
-    if "Omicron" in record.id or "OM" in record.id:
-        omicron = record.seq
+# ---- Find Wuhan reference robustly ----
+ref_name = None
+for name in seqs:
+    if "Wuhan" in name or "NC_045512" in name:
+        ref_name = name
+        break
 
-# RBD region in spike protein (approx 319–541)
+if ref_name is None:
+    raise ValueError("Wuhan reference not found in alignment")
+
+ref = seqs[ref_name]
+
+# ---- RBD region (protein coords) ----
 rbd_start = 319 - 1
 rbd_end = 541
 
-print("\nOmicron RBD mutations vs Wuhan\n")
-print("-"*50)
-print("Pos  Wuhan  Omicron  Mutation")
-print("-"*50)
+print(f"\nReference sequence → {ref_name}")
+print("=" * 60)
 
-pos = 319
-for i in range(rbd_start, rbd_end):
-    w = wuhan[i]
-    o = omicron[i]
+# ---- Compare all variants to Wuhan ----
+for name, seq in seqs.items():
 
-    if w != o and w not in "-X" and o not in "-X":
-        print(f"{pos:<4} {w:<6} {o:<8} {w}{pos}{o}")
+    if name == ref_name:
+        continue
 
-    pos += 1
+    print(f"\n{name} RBD mutations vs Wuhan")
+    print("-" * 55)
+    print("Pos  Wuhan  Variant  Mutation")
+    print("-" * 55)
+
+    pos = 319
+    mutation_count = 0
+
+    for i in range(rbd_start, rbd_end):
+        w = ref[i]
+        v = seq[i]
+
+        if w != v and w not in "-X" and v not in "-X":
+            print(f"{pos:<4} {w:<6} {v:<8} {w}{pos}{v}")
+            mutation_count += 1
+
+        pos += 1
+
+    if mutation_count == 0:
+        print("No RBD mutations detected")
+
+print("\nDone.")
