@@ -39,7 +39,7 @@ Ensure you have Python 12 installed. You can verify this by running:
 python --version
 
 ### Clone the Repository
-
-git clone [https://github.com/Ravi-Teja-S/viral_phylogeny.git](https://github.com/Ravi-Teja-S/viral_phylogeny.git)
+```bash
+git clone https://github.com/Ravi-Teja-S/viral_phylogeny.git
 
 cd viral_phylogeny
