@@ -35,7 +35,7 @@ Follow these instructions to set up the project on your local machine.
 ### Prerequisites
 
 Ensure you have Python 12 installed. You can verify this by running:
-```bash
+
 python --version
 
 ### Clone the Repository
