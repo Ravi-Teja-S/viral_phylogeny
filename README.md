@@ -1,31 +1,44 @@
-# Viral Phylogeny:
+# 🧬 Viral Phylogeny: SARS-CoV-2 Genomic Analysis
 
-Phylogenomic analysis of SARS-CoV-2 (COVID-19) using Biopython.
+[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
+[![Biopython](https://img.shields.io/badge/Biopython-1.78%2B-green.svg)](https://biopython.org/)
+[![License](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Ravi-Teja-S/viral_phylogeny/graphs/commit-activity)
 
-## Project Overview:
+## 📌 Project Overview
 
-This project performs phylogenomic analysis of SARS-CoV-2 genome sequences 
-using Biopython. The workflow includes sequence retrieval, multiple sequence 
-alignment, phylogenetic tree construction, and evolutionary analysis.
+This project performs a comprehensive **phylogenomic analysis of SARS-CoV-2 (COVID-19) genome sequences** using Python. By leveraging the **Biopython** library, this workflow automates the retrieval of viral sequences, aligns them to identify mutations, and constructs phylogenetic trees to visualize evolutionary relationships between different viral isolates.
 
-## Objectives:
+This tool is useful for understanding the genetic divergence of SARS-CoV-2 variants and tracking evolutionary lineages.
 
-- Retrieve viral genome sequences
-- Perform sequence alignment
-- Construct phylogenetic tree
-- Analyze evolutionary relationships
+## 📂 Repository Link
+[https://github.com/Ravi-Teja-S/viral_phylogeny](https://github.com/Ravi-Teja-S/viral_phylogeny)
 
-## Tools and Libraries:
+## 🎯 Objectives
 
-- Python
-- Biopython
-- NCBI database
-- FASTA sequence files
+- **Sequence Retrieval:** Automate fetching of SARS-CoV-2 genomes from the NCBI Nucleotide database.
+- **Multiple Sequence Alignment (MSA):** Align sequences to identify conserved regions and variations.
+- **Phylogenetics:** Construct evolutionary trees using distance-based methods (e.g., UPGMA, Neighbor-Joining).
+- **Visualization:** Render and analyze the phylogenetic tree to interpret viral evolution.
 
-## Methodology:
+## 🛠️ Tech Stack
 
-1. Collect SARS-CoV-2 genome sequences in FASTA format.
-2. Use Biopython to parse and process sequences.
-3. Perform multiple sequence alignment.
-4. Construct phylogenetic tree.
-5. Visualize evolutionary relationships.
+- **Language:** Python 3
+- **Bioinformatics:** Biopython (`Bio.Entrez`, `Bio.Phylo`, `Bio.Align`)
+- **Data Source:** NCBI GenBank (FASTA format)
+- **Visualization:** Matplotlib / Biopython Phylo module
+
+## 🚀 Getting Started
+
+Follow these instructions to set up the project on your local machine.
+
+### Prerequisites
+
+Ensure you have Python 12 installed. You can verify this by running:
+```bash
+python --version
+
+### Clone the Repository
+
+git clone [https://github.com/Ravi-Teja-S/viral_phylogeny.git](https://github.com/Ravi-Teja-S/viral_phylogeny.git)
+cd viral_phylogeny
