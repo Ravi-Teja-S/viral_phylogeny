@@ -1,4 +1,5 @@
-from Bio import AlignIO, Phylo
+from Bio import AlignIO
+from Bio import Phylo
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
 from pathlib import Path
 import matplotlib.pyplot as plt
