@@ -41,5 +41,24 @@ python --version
 ### Clone the Repository
 ```bash
 git clone https://github.com/Ravi-Teja-S/viral_phylogeny.git
-
 cd viral_phylogeny
+
+```
+
+### Steps for editing the repository
+
+1. ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature-update-your_branch_name
+   ```
+2. Now you can make changes in the code
+
+3.  ```bash
+    git add .
+    git commit -m "Your commit message"
+    git push feature-update-your_branch_name
+    
+4. In the Repo page, click on "Compare and pull Request"
+
+### NOTE: do not push to main branch.
