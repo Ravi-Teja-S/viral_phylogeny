@@ -70,7 +70,7 @@ pip install -r requirements.txt
     ```bash
     git add .
     git commit -m "Your commit message"
-    git push feature-update-your_branch_name
+    git push origin feature-update-your_branch_name
     ```
     
 4. Go to the repository on GitHub and click “Compare & pull request” to submit your changes for review.
