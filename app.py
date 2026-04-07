@@ -2,7 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from Bio import AlignIO, SeqIO
+import plotly.graph_objects as go
+from Bio import AlignIO, SeqIO, Phylo
+from io import StringIO
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
@@ -234,48 +236,98 @@ elif page == "🔍 Sequences":
 # ══════════════════════════════════════════════
 elif page == "🌳 Phylogenetic Tree":
     st.title("🌳 Phylogenetic Tree")
-    st.markdown("Evolutionary relationships between SARS-CoV-2 variants, rooted at the **Bat coronavirus outgroup**.")
+    st.markdown("Evolutionary relationships between SARS-CoV-2 variants rooted at the **Bat coronavirus outgroup**.")
     st.markdown("---")
 
-    col1, col2 = st.columns([2, 1])
+    VARIANT_COLORS = {
+        "Wuhan":        "#4caf50",
+        "Alpha_B117":   "#2196f3",
+        "Beta_B1351":   "#ce93d8",
+        "Gamma_P1":     "#ffb300",
+        "Delta_B16172": "#ef5350",
+        "Omicron_BA1":  "#00e5ff",
+        "Omicron_BA2":  "#40c4ff",
+        "Omicron_BA5":  "#80deea",
+        "Lambda_C37":   "#ff7043",
+        "Mu_B1621":     "#bcaaa4",
+        "Bat_outgroup": "#78909c",
+    }
 
-    with col1:
-        st.markdown('<div class="section-header">Neighbor-Joining Tree (BLOSUM62)</div>', unsafe_allow_html=True)
-        tree_img = BASE / "figures/phylogeny.png"
-        if tree_img.exists():
-            st.image(str(tree_img), use_container_width=True)
-        else:
-            st.warning("phylogeny.png not found. Run script 4 to generate it.")
+    tree = Phylo.read(str(BASE / "results/phylogeny_tree.nwk"), "newick")
+    n_leaves = len(tree.get_terminals())
+    leaves   = tree.get_terminals()
+    depths   = tree.depths(unit_branch_lengths=False)
 
-    with col2:
-        st.markdown('<div class="section-header">How to Read This Tree</div>', unsafe_allow_html=True)
-        st.markdown("""
-- **Branch length** = genetic distance (longer = more mutations)
-- **Bat_outgroup** roots the tree — shows how far SARS-CoV-2 diverged from its animal ancestor
-- Variants on the **same branch** are more closely related
-- **Omicron** variants are the most diverged from Wuhan
-        """)
+    fig, ax = plt.subplots(figsize=(14, max(8, n_leaves * 0.8)))
 
+    def label_colors(name):
+        return VARIANT_COLORS.get(name, "black")
+
+    Phylo.draw(tree, axes=ax, do_show=False, label_colors=label_colors)
+
+    # overlay colored dots on leaf nodes
+    for idx, leaf in enumerate(leaves):
+        ax.scatter(
+            depths[leaf], idx + 1,
+            s=60, color=VARIANT_COLORS.get(leaf.name, "#333333"),
+            zorder=5, linewidths=0.8, edgecolors="white"
+        )
+
+    plt.tight_layout()
+
+    col_tree, col_info = st.columns([3, 1])
+
+    with col_tree:
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
+
+        st.markdown("**Node Info** — select a variant:")
+        selected_node = st.selectbox(
+            "",
+            ["— select —"] + [lf.name for lf in leaves],
+            label_visibility="collapsed",
+            key="tree_node_sel"
+        )
+        if selected_node and selected_node != "— select —":
+            info = VARIANTS_INFO.get(selected_node, {})
+            muts = mutation_data.get(selected_node, [])
+            vcolor = VARIANT_COLORS.get(selected_node, "#333")
+            st.markdown(
+                f'<div style="border-left: 4px solid {vcolor}; padding: 10px 16px; '
+                f'background:#f9f9f9; border-radius:6px; margin-top:8px">'
+                f'<b style="font-size:1rem">{selected_node}</b><br>'
+                f'Lineage: <b>{info.get("lineage", "—")}</b><br>'
+                f'Accession: {info.get("accession", "—")}<br>'
+                f'Wave: {info.get("wave", "—")}<br>'
+                f'RBD Mutations vs Wuhan: <b>{len(muts)}</b>'
+                f'</div>',
+                unsafe_allow_html=True
+            )
+
+    with col_info:
+        st.markdown('<div class="section-header">🎨 Variant Legend</div>',
+                    unsafe_allow_html=True)
+        for vname, vcolor in VARIANT_COLORS.items():
+            vinfo = VARIANTS_INFO.get(vname, {})
+            st.markdown(
+                f'<div style="display:flex;align-items:center;margin-bottom:6px">'
+                f'<span style="color:{vcolor};font-size:1.3rem;margin-right:8px">●</span>'
+                f'<span style="font-size:0.82rem"><b>{vname}</b><br>'
+                f'<span style="color:#78909c">{vinfo.get("lineage","—")}</span>'
+                f'</span></div>',
+                unsafe_allow_html=True
+            )
         st.markdown("---")
-        st.markdown('<div class="section-header">Method</div>', unsafe_allow_html=True)
-        st.markdown("""
-| Step | Detail |
-|---|---|
-| Input | Aligned spike protein sequences |
-| Distance metric | BLOSUM62 substitution matrix |
-| Tree algorithm | Neighbor-Joining (NJ) |
-| Rooting | Bat coronavirus outgroup |
-| Output format | Newick (.nwk) |
-        """)
-
-        st.markdown("---")
-        st.markdown('<div class="section-header">Newick Format</div>', unsafe_allow_html=True)
-        nwk = BASE / "results/phylogeny_tree.nwk"
-        if nwk.exists():
-            st.code(nwk.read_text(), language=None)
+        st.markdown('<div class="section-header">📐 Method</div>',
+                    unsafe_allow_html=True)
+        st.markdown("**Algorithm:** Neighbor-Joining  ")
+        st.markdown("**Distance:** BLOSUM62  ")
+        st.markdown("**Root:** Bat coronavirus outgroup  ")
+        st.markdown("**Labels:** Leaf = variant name, Inner = internal node")
 
     st.markdown("---")
-    st.markdown('<div class="section-header">🔍 Evolutionary Groupings</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">🔍 Evolutionary Groupings</div>',
+                unsafe_allow_html=True)
     g1, g2, g3 = st.columns(3)
     with g1:
         st.markdown("**🟢 Closest to Wuhan**")
